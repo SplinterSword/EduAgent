@@ -34,20 +34,18 @@ export default function UploadPage() {
   return (
     <div className="container mx-auto py-8">
       <FileUploadForm
-        onMaterialSubmit={handleMaterialSubmit}
         title="Upload Course Material"
-        description="Paste your course text here to make it available for AI processing like flashcards, quizzes, and tutoring."
-        submitButtonText="Submit Material for AI"
+        description="Upload your PDF or PPTX course material. The content will be parsed and stored in your browser for use in flashcards, quizzes, and tutoring."
+        submitButtonText="Upload and Parse"
         isLoading={isLoading}
       />
-       <div className="mt-8 p-4 bg-secondary/50 border border-border rounded-lg text-sm text-muted-foreground">
+      <div className="mt-8 p-4 bg-secondary/50 border border-border rounded-lg text-sm text-muted-foreground">
         <h3 className="font-semibold text-foreground mb-2">How to Use:</h3>
         <ul className="list-disc list-inside space-y-1">
-          <li>Copy text content from your PDF, DOCX, or other course files.</li>
-          <li>Paste the copied text into the text area above.</li>
-          <li>Click &quot;Submit Material for AI&quot;.</li>
-          <li>Once submitted (simulated for now), this material could be used by other features on this platform.</li>
-          <li>Currently, each AI feature (Flashcards, Quizzes, Tutor) will require you to paste material directly on its page.</li>
+          <li>Upload a PDF or PPTX file containing your course material.</li>
+          <li>The content will be parsed and stored in your browser (localStorage).</li>
+          <li>Flashcards, quizzes, and tutor features will automatically use your latest uploaded material.</li>
+          <li>If you upload a new file, it will replace the previous material for those features.</li>
         </ul>
       </div>
     </div>

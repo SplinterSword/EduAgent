@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -21,6 +22,30 @@ export function AiTutorChat() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const [materialError, setMaterialError] = useState<string | null>(null);
+
+  // Load course material from localStorage on mount
+  React.useEffect(() => {
+    try {
+      const filename = localStorage.getItem('latest_course_material');
+      if (!filename) {
+        setMaterialError('No course material uploaded. Please upload a PDF or PPTX first.');
+        setCourseMaterial('');
+        return;
+      }
+      const content = localStorage.getItem(`course_material_${filename}`);
+      if (!content) {
+        setMaterialError('Stored course material not found or corrupted. Please re-upload.');
+        setCourseMaterial('');
+        return;
+      }
+      setCourseMaterial(content);
+      setMaterialError(null);
+    } catch (err) {
+      setMaterialError('Failed to load course material.');
+      setCourseMaterial('');
+    }
+  }, []);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -32,7 +57,7 @@ export function AiTutorChat() {
     if (e) e.preventDefault();
     if (!userInput.trim()) return;
     if (!courseMaterial.trim()) {
-      toast({ title: 'Missing Context', description: 'Please provide course material context first.', variant: 'destructive' });
+      toast({ title: 'Missing Context', description: 'Please upload course material first.', variant: 'destructive' });
       return;
     }
 

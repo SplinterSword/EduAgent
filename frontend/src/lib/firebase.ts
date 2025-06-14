@@ -10,15 +10,6 @@ const storageBucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
 const messagingSenderId = process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID;
 const appId = process.env.NEXT_PUBLIC_FIREBASE_APP_ID;
 
-console.log('--- Firebase Environment Variables Loaded ---');
-console.log('NEXT_PUBLIC_FIREBASE_API_KEY:', apiKey);
-console.log('NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:', authDomain);
-console.log('NEXT_PUBLIC_FIREBASE_PROJECT_ID:', projectId);
-console.log('NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET:', storageBucket);
-console.log('NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID:', messagingSenderId);
-console.log('NEXT_PUBLIC_FIREBASE_APP_ID:', appId);
-console.log('-----------------------------------------');
-
 const firebaseConfig = {
   apiKey: apiKey,
   authDomain: authDomain,

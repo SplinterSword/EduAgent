@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -46,11 +47,35 @@ export function FlashcardGenerator() {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [flippedStates, setFlippedStates] = useState<boolean[]>([]);
   const { toast } = useToast();
+  const [materialError, setMaterialError] = useState<string | null>(null);
+
+  // Load course material from localStorage on mount
+  React.useEffect(() => {
+    try {
+      const filename = localStorage.getItem('latest_course_material');
+      if (!filename) {
+        setMaterialError('No course material uploaded. Please upload a PDF or PPTX first.');
+        setCourseMaterial('');
+        return;
+      }
+      const content = localStorage.getItem(`course_material_${filename}`);
+      if (!content) {
+        setMaterialError('Stored course material not found or corrupted. Please re-upload.');
+        setCourseMaterial('');
+        return;
+      }
+      setCourseMaterial(content);
+      setMaterialError(null);
+    } catch (err) {
+      setMaterialError('Failed to load course material.');
+      setCourseMaterial('');
+    }
+  }, []);
 
   const handleGenerateFlashcards = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!courseMaterial.trim()) {
-      toast({ title: 'Empty Material', description: 'Please paste your course material.', variant: 'destructive' });
+      toast({ title: 'Empty Material', description: 'Please upload course material first.', variant: 'destructive' });
       return;
     }
     setIsLoading(true);
