@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: var(--font-body), sans-serif;
+}
+
+@layer base {
+  :root {
+    --background: 240 100% 99%; /* Off-white (#F8F8FF) */
+    --foreground: 240 10% 20%; /* Dark Blue-Gray for good contrast */
+
+    --muted: 240 20% 92%;
+    --muted-foreground: 240 10% 45%;
+
+    --popover: 240 100% 99%;
+    --popover-foreground: 240 10% 20%;
+
+    --card: 240 100% 99%;
+    --card-foreground: 240 10% 20%;
+
+    --border: 240 20% 88%;
+    --input: 240 20% 88%;
+
+    --primary: 255 95% 86%; /* Lavender (#C4B5FD) */
+    --primary-foreground: 255 50% 25%; /* Dark Purple for contrast */
+
+    --secondary: 240 67% 94%; /* Light Lavender (#E6E6FA) */
+    --secondary-foreground: 240 30% 30%;
+
+    --accent: 120 100% 85%; /* Lighter Pale Green for better general use (#B2FFB2), original #98FF98 is too vibrant for large bg areas */
+    --accent-foreground: 120 50% 25%; /* Dark Green for contrast */
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --ring: 255 95% 75%; /* Brighter Lavender for ring */
+
+    --radius: 0.5rem;
+
+    /* Sidebar specific theme variables */
+    --sidebar-background: 240 60% 96%; /* Slightly desaturated Light Lavender */
+    --sidebar-foreground: 240 15% 25%;
+    --sidebar-primary: 255 95% 80%; /* Brighter Lavender for active items */
+    --sidebar-primary-foreground: 255 50% 20%;
+    --sidebar-accent: 240 50% 90%; /* Hover for sidebar items */
+    --sidebar-accent-foreground: 240 15% 20%;
+    --sidebar-border: 240 20% 85%;
+    --sidebar-ring: 255 95% 70%;
+  }
+
+  .dark {
+    --background: 240 10% 10%;
+    --foreground: 240 10% 95%;
+
+    --muted: 240 10% 20%;
+    --muted-foreground: 240 10% 70%;
+
+    --popover: 240 10% 10%;
+    --popover-foreground: 240 10% 95%;
+
+    --card: 240 10% 10%;
+    --card-foreground: 240 10% 95%;
+
+    --border: 240 10% 25%;
+    --input: 240 10% 25%;
+
+    --primary: 255 85% 70%; 
+    --primary-foreground: 255 30% 15%;
+
+    --secondary: 240 15% 20%;
+    --secondary-foreground: 240 10% 90%;
+
+    --accent: 120 70% 40%;
+    --accent-foreground: 120 20% 90%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 98%;
+
+    --ring: 255 85% 60%;
+    
+    /* Sidebar specific theme variables for dark mode */
+    --sidebar-background: 240 10% 12%;
+    --sidebar-foreground: 240 10% 90%;
+    --sidebar-primary: 255 85% 65%;
+    --sidebar-primary-foreground: 255 25% 10%;
+    --sidebar-accent: 240 10% 22%;
+    --sidebar-accent-foreground: 240 10% 92%;
+    --sidebar-border: 240 10% 20%;
+    --sidebar-ring: 255 85% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
