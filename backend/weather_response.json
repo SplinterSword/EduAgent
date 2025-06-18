@@ -1,0 +1,107 @@
+[
+  {
+    "content": {
+      "parts": [
+        {
+          "functionCall": {
+            "id": "adk-d9a098ce-02c8-414f-a395-cdae009398db",
+            "args": {
+              "city": "new york"
+            },
+            "name": "get_weather"
+          }
+        }
+      ],
+      "role": "model"
+    },
+    "usageMetadata": {
+      "candidatesTokenCount": 6,
+      "candidatesTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 6
+        }
+      ],
+      "promptTokenCount": 475,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 475
+        }
+      ],
+      "totalTokenCount": 481
+    },
+    "invocationId": "e-8d6043f3-4354-4e2a-88e5-f6fa24289138",
+    "author": "weather_agent_v2",
+    "actions": {
+      "stateDelta": {},
+      "artifactDelta": {},
+      "requestedAuthConfigs": {}
+    },
+    "longRunningToolIds": [],
+    "id": "NDG0zz04",
+    "timestamp": 1750177856.45109
+  },
+  {
+    "content": {
+      "parts": [
+        {
+          "functionResponse": {
+            "id": "adk-d9a098ce-02c8-414f-a395-cdae009398db",
+            "name": "get_weather",
+            "response": {
+              "status": "success",
+              "report": "The weather in New York is sunny with a temperature of 25 degrees Celsius (77 degrees Fahrenheit)."
+            }
+          }
+        }
+      ],
+      "role": "user"
+    },
+    "invocationId": "e-8d6043f3-4354-4e2a-88e5-f6fa24289138",
+    "author": "weather_agent_v2",
+    "actions": {
+      "stateDelta": {},
+      "artifactDelta": {},
+      "requestedAuthConfigs": {}
+    },
+    "id": "pKBAi5Hq",
+    "timestamp": 1750177858.627892
+  },
+  {
+    "content": {
+      "parts": [
+        {
+          "text": "The weather in New York is sunny with a temperature of 25 degrees Celsius (77 degrees Fahrenheit).\n"
+        }
+      ],
+      "role": "model"
+    },
+    "usageMetadata": {
+      "candidatesTokenCount": 23,
+      "candidatesTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 23
+        }
+      ],
+      "promptTokenCount": 509,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 509
+        }
+      ],
+      "totalTokenCount": 532
+    },
+    "invocationId": "e-8d6043f3-4354-4e2a-88e5-f6fa24289138",
+    "author": "weather_agent_v2",
+    "actions": {
+      "stateDelta": {},
+      "artifactDelta": {},
+      "requestedAuthConfigs": {}
+    },
+    "id": "yyqhkDmf",
+    "timestamp": 1750177858.628552
+  }
+]
