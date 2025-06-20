@@ -1,5 +1,4 @@
 from google.adk.agents import Agent, LoopAgent
-from google.adk.tools import google_search
 
 summarizer_agent = Agent(
     name="Summarizer_Agent",
