@@ -8,8 +8,15 @@
  * - GenerateFlashcardsOutput - The return type for the generateFlashcards function.
  */
 
-import {ai} from '@/ai/genkit';
+import {genkit} from 'genkit';
+import {googleAI} from '@genkit-ai/googleai';
 import {z} from 'genkit';
+import { extractJsonFromResponse } from './flow_utils';
+
+const ai = genkit({
+  plugins: [googleAI()],
+  model: 'googleai/gemini-2.0-flash',
+});
 
 const GenerateFlashcardsInputSchema = z.object({
   courseMaterial: z
@@ -26,7 +33,66 @@ const GenerateFlashcardsOutputSchema = z.object({
 export type GenerateFlashcardsOutput = z.infer<typeof GenerateFlashcardsOutputSchema>;
 
 export async function generateFlashcards(input: GenerateFlashcardsInput): Promise<GenerateFlashcardsOutput> {
-  return generateFlashcardsFlow(input);
+  
+  // Use ADK /run endpoint with configurable backend URL
+  const ADK_URL = process.env.NEXT_PUBLIC_AGENT_API_URL || "http://localhost:8000";
+  try {
+    const res = await fetch(`${ADK_URL}/run`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        input: `Create flashcards for this content: ${input.courseMaterial}`,
+        metadata: {
+          request_type: "flashcards",
+          course_material: input.courseMaterial,
+          output_schema: {
+            type: "object",
+            properties: {
+              flashcards: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    front: { type: "string" },
+                    back: { type: "string" }
+                  },
+                  required: ["front", "back"]
+                }
+              }
+            },
+            required: ["flashcards"]
+          }
+        }
+      })
+    });
+    if (!res.ok) throw new Error(`Failed to generate flashcards from backend agent: ${res.status}`);
+    const data = await extractJsonFromResponse(await res.text());
+
+    // ADK returns response in data.output
+    let result;
+    try {
+      result = typeof data === 'string' ? JSON.parse(data) : data;
+    } catch {
+      result = data;
+    }
+    // Ensure the response matches our expected schema
+    if (result.flashcards && Array.isArray(result.flashcards)) {
+      return result;
+    } else if (Array.isArray(result)) {
+      return { flashcards: result };
+    } else {
+      throw new Error('Invalid flashcards format received from agent');
+    }
+  } catch (error) {
+    console.error('Flashcard generation error:', error);
+    // Fallback to local Genkit flow if ADK fails
+    try {
+      return await generateFlashcardsFlow(input);
+    } catch (fallbackError) {
+      console.error("Error in fallback implementation:", fallbackError);
+      throw fallbackError;
+    }
+  }
 }
 
 const prompt = ai.definePrompt({

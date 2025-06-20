@@ -10,6 +10,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { extractJsonFromResponse } from './flow_utils';
 
 const SuggestResourcesInputSchema = z.object({
   courseContent: z
@@ -28,7 +29,59 @@ const SuggestResourcesOutputSchema = z.array(SuggestedResourceSchema).describe('
 export type SuggestResourcesOutput = z.infer<typeof SuggestResourcesOutputSchema>;
 
 export async function suggestResources(input: SuggestResourcesInput): Promise<SuggestResourcesOutput> {
-  return suggestResourcesFlow(input);
+  // Use ADK /run endpoint with configurable backend URL
+  const ADK_URL = process.env.NEXT_PUBLIC_AGENT_API_URL || "http://localhost:8000";
+  try {
+    const res = await fetch(`${ADK_URL}/run`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        input: `Take this content and give me reference links for this content: ${input.courseContent}`,
+        metadata: {
+          request_type: "suggest_resources",
+          course_content: input.courseContent,
+          output_schema: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                title: { type: "string" },
+                url: { type: "string", format: "uri" },
+                reason: { type: "string" }
+              },
+              required: ["title", "url", "reason"]
+            }
+          }
+        }
+      })
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to suggest resources: ${res.statusText}`);
+    }
+
+    const data = extractJsonFromResponse(await res.text());
+    let result;
+    try {
+      result = typeof data === 'string' ? JSON.parse(data) : data;
+    } catch {
+      result = data;
+    }
+    // Ensure the response matches our expected schema
+    if (!SuggestResourcesOutputSchema.safeParse(result).success) {
+      throw new Error("Failed to parse response as SuggestResourcesOutput");
+    }
+    return result;
+  } catch (error) {
+    console.error("Error in API call, falling back to local flow:", error);
+    try {
+      // Fall back to the local implementation if the API call fails
+      return await suggestResourcesFlow(input);
+    } catch (fallbackError) {
+      console.error("Error in fallback implementation:", fallbackError);
+      throw fallbackError;
+    }
+  }
 }
 
 const resourceSuggestionTool = ai.defineTool({
