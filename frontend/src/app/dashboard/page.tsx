@@ -1,10 +1,13 @@
-
+'use client';
 import { Button } from '@/components/ui/button';
 import { CustomCard } from '@/components/ui/CustomCard';
 import { ArrowRight, BookMarked, Copy, HelpCircle, MessageSquareText, UploadCloud } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function DashboardPage() {
+  const { user, signOut } = useAuth();
   const features = [
     {
       title: 'Upload Material',
@@ -42,6 +45,38 @@ export default function DashboardPage() {
       cta: 'Chat with Tutor',
     },
   ];
+
+  const userID = user || 'u_123';
+
+
+  const makeSession = async () => {
+    const session = await fetch('http://localhost:8000/apps/EduAssitant_Agents/users/' + userID + '/sessions/s_123', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        state: {
+          key1: 'value1',
+          key2: 42,
+        }
+      }),
+    });
+
+    if (!session.ok) {
+      throw new Error('Failed to create session');
+    }
+
+    const session_id = (await session.json()).session_id;
+    localStorage.setItem('session_id', session_id);
+    console.log(session_id);
+  }
+
+  useEffect(() => {
+    console.log('Dashboard Page')
+    makeSession();
+  }, [])
+  
 
   return (
     <div className="container mx-auto">
