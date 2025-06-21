@@ -46,9 +46,8 @@ export default function DashboardPage() {
     },
   ];
 
-  const userID = user || 'u_123';
+  const userID = user?.email || 'u_123';
   const sessionId = localStorage.getItem('sessionId') || 's_' + Math.random().toString(36).substr(2, 9);
-
 
   const makeSession = async () => {
     const session = await fetch('http://localhost:8000/apps/EduAssistant_Agents/users/' + userID + '/sessions/' + sessionId, {
@@ -68,7 +67,7 @@ export default function DashboardPage() {
       throw new Error('Failed to create session');
     }
 
-    const session_id = (await session.json()).session_id;
+    const session_id = sessionId;
     localStorage.setItem('session_id', session_id);
     console.log(session_id);
   }

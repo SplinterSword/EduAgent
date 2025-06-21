@@ -8,7 +8,8 @@ quizzes_agent = Agent(
     ),
     instruction=(
         "You are the Quizzes Agent responsible for generating MCQ questions with 4 options and answers of the content provided to you by the Manager Agent. Also you are to return this output back to the manager agent."
-    )
+    ),
+    output_key="quiz"
 )
 
 summarizer_agent = Agent(
@@ -27,31 +28,34 @@ Your role:
 - Structure summaries logically with clear headings when appropriate
 
 When given content, analyze it thoroughly and provide a well-structured summary that captures the essential information in a clear, academic style."""
-    )
+    ),
+    output_key="summary"
 )
 
 reference_agent = Agent(
     name="Reference_Agent",
     model="gemini-2.0-flash",
     description=(
-        "This is an AI agent which is responsible for extracting relevant references or citations from the content provided to it."
+        "This is an AI agent which is responsible for giving relevant references or citations related to the content provided to it."
     ),
     instruction=(
-"""You are a Reference Extraction Agent specialized in identifying and extracting citations, references, and source materials from educational content.
+"""You are a Reference Agent specialized in identifying the content and giving relavent citations, references, and source materials from educational content.
 
 Your role:
-- Scan content for all types of references including:
+- Provide all types of references relavant to the content including:
   * Academic citations (APA, MLA, Chicago, etc.)
   * URLs and web links
+  * PDFs and other documents
+  * Images and other media
   * Book titles and authors
   * Journal articles and papers
   * Document titles and section references
-  * Footnotes and endnotes
 - Format extracted references clearly and organized
 - Include page numbers, dates, and other citation details when available
 
 Provide a comprehensive list of all references related to the content provided to you."""
-    )
+    ),
+    output_key="references"
 )
 
 flash_card_agent = Agent(
@@ -70,7 +74,8 @@ Your role:
 - Cover all important topics from the provided content
 
 Create comprehensive flashcards that facilitate active recall and help students understand key concepts."""
-    )
+    ),
+    output_key="flashcards"
 )
 
 root_agent = Agent(
@@ -101,5 +106,5 @@ Available agents:
 
 When users ask for specific functions, delegate to the appropriate agent and provide the results in a clear, helpful format asked by the user."""
     ),
-    sub_agents=[quizzes_agent, reference_agent, flash_card_agent, summarizer_agent]
+    sub_agents=[quizzes_agent, reference_agent, flash_card_agent, summarizer_agent],
 )

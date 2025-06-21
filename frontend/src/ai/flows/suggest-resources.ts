@@ -34,7 +34,7 @@ export async function suggestResources(input: SuggestResourcesInput): Promise<Su
   const ADK_URL = process.env.NEXT_PUBLIC_AGENT_API_URL || "http://localhost:8000";
   try {
     const { user, signOut } = useAuth();
-    const userId = user || 'u_123'; // TODO: Get from AuthContext
+    const userId = user?.email || 'u_123';
     const sessionId = localStorage.getItem('sessionId') || 's_' + Math.random().toString(36).substr(2, 9);
     
     const res = await fetch(`${ADK_URL}/run`, {
@@ -47,7 +47,7 @@ export async function suggestResources(input: SuggestResourcesInput): Promise<Su
         newMessage: {
           role: "user",
           parts: [{
-            text: `Suggest 3-5 relevant study resources for this content. For each resource, provide a title, URL, and a brief reason why it's relevant. Format your response as a JSON array of objects with 'title' (string), 'url' (string, must be a valid URL), and 'reason' (string) fields. Here's the content: ${input.courseContent}\n\nFormat your response like this: [{\"title\": \"...\", \"url\": \"https://...\", \"reason\": \"...\"}]`
+            text: `Suggest 3-5 relevant references for this content. For each resource, provide a title, URL, and a brief reason why it's relevant. Format your response as a JSON array of objects with 'title' (string), 'url' (string, must be a valid URL), and 'reason' (string) fields. Here's the content: ${input.courseContent}\n\nFormat your response like this: [{\"title\": \"...\", \"url\": \"https://...\", \"reason\": \"...\"}]`
           }]
         }
       })

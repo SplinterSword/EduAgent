@@ -44,7 +44,7 @@ export async function generateQuizzes(
   try {
     const { user, signOut } = useAuth();
 
-    const userId = user || 'u_123'; // TODO: Get from AuthContext
+    const userId = user?.email || 'u_123'; // TODO: Get from AuthContext
     const sessionId = localStorage.getItem('sessionId') || 's_' + Math.random().toString(36).substr(2, 9);
     
     const res = await fetch(`${ADK_URL}/run`, {
