@@ -50,7 +50,7 @@ export default function DashboardPage() {
 
 
   const makeSession = async () => {
-    const session = await fetch('http://localhost:8000/apps/EduAssitant_Agents/users/' + userID + '/sessions/s_123', {
+    const session = await fetch('http://localhost:8000/apps/EduAssistant_Agents/users/' + userID + '/sessions/s_123', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

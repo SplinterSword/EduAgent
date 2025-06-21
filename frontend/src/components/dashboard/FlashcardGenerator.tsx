@@ -11,7 +11,6 @@ import type { Flashcard as FlashcardType } from '@/types';
 import { Loader2, Copy, RotateCcw, Check, FileText, Lightbulb } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { AnimatePresence, motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
 
 function Flashcard({ card, isFlipped, onFlip }: { card: FlashcardType; isFlipped: boolean; onFlip: () => void; }) {
   return (

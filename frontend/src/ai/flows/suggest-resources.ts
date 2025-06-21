@@ -11,6 +11,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { extractJsonFromResponse } from './flow_utils';
+import { useAuth } from '@/contexts/AuthContext';
 
 const SuggestResourcesInputSchema = z.object({
   courseContent: z
@@ -32,26 +33,22 @@ export async function suggestResources(input: SuggestResourcesInput): Promise<Su
   // Use ADK /run endpoint with configurable backend URL
   const ADK_URL = process.env.NEXT_PUBLIC_AGENT_API_URL || "http://localhost:8000";
   try {
+    const { user, signOut } = useAuth();
+    const userId = user || 'u_123'; // TODO: Get from AuthContext
+    const sessionId = localStorage.getItem('sessionId') || 's_' + Math.random().toString(36).substr(2, 9);
+    
     const res = await fetch(`${ADK_URL}/run`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        input: `Take this content and give me reference links for this content: ${input.courseContent}`,
-        metadata: {
-          request_type: "suggest_resources",
-          course_content: input.courseContent,
-          output_schema: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                title: { type: "string" },
-                url: { type: "string", format: "uri" },
-                reason: { type: "string" }
-              },
-              required: ["title", "url", "reason"]
-            }
-          }
+        appName: "EduAssistant_Agents",
+        userId: userId,
+        sessionId: sessionId,
+        newMessage: {
+          role: "user",
+          parts: [{
+            text: `Suggest 3-5 relevant study resources for this content. For each resource, provide a title, URL, and a brief reason why it's relevant. Format your response as a JSON array of objects with 'title' (string), 'url' (string, must be a valid URL), and 'reason' (string) fields. Here's the content: ${input.courseContent}\n\nFormat your response like this: [{\"title\": \"...\", \"url\": \"https://...\", \"reason\": \"...\"}]`
+          }]
         }
       })
     });

@@ -1,4 +1,4 @@
-from google.adk.agents import Agent, LoopAgent
+from google.adk.agents import Agent
 
 quizzes_agent = Agent(
     name="Quizzes_Agent",
@@ -50,7 +50,7 @@ Your role:
 - Format extracted references clearly and organized
 - Include page numbers, dates, and other citation details when available
 
-Provide a comprehensive list of all references related to the content provided to you. Make sure that you include at least 5 references."""
+Provide a comprehensive list of all references related to the content provided to you."""
     )
 )
 
@@ -73,8 +73,8 @@ Create comprehensive flashcards that facilitate active recall and help students 
     )
 )
 
-manager_agent = Agent(
-    name="EduAssistant_Manager_Agent",
+root_agent = Agent(
+    name="Manager_Agent",
     model="gemini-2.0-flash",
     description=(
         "This AI agent functions as an orchestrator and coordinator in a multi-agent system designed to answer queries based on domain-specific content provided to it. Its primary role is to manage the interactions between multiple specialized agents and ensure accurate, context-aware, and efficient responses to user queries."
@@ -101,7 +101,5 @@ Available agents:
 
 When users ask for specific functions, delegate to the appropriate agent and provide the results in a clear, helpful format asked by the user."""
     ),
-    sub_agents=[quizzes_agent, reference_agent, flash_card_agent, summarizer_agent],
+    sub_agents=[quizzes_agent, reference_agent, flash_card_agent, summarizer_agent]
 )
-
-root_agent = manager_agent

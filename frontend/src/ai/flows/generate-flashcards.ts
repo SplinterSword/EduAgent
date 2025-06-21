@@ -12,6 +12,7 @@ import {genkit} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
 import {z} from 'genkit';
 import { extractJsonFromResponse } from './flow_utils';
+import { useAuth } from '@/contexts/AuthContext';
 
 const ai = genkit({
   plugins: [googleAI()],
@@ -37,31 +38,22 @@ export async function generateFlashcards(input: GenerateFlashcardsInput): Promis
   // Use ADK /run endpoint with configurable backend URL
   const ADK_URL = process.env.NEXT_PUBLIC_AGENT_API_URL || "http://localhost:8000";
   try {
+    const { user, signOut } = useAuth();  
+    const userId = user || 'u_123'; // TODO: Get from AuthContext
+    const sessionId = localStorage.getItem('sessionId') || 's_' + Math.random().toString(36).substr(2, 9);
+    
     const res = await fetch(`${ADK_URL}/run`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        input: `Create flashcards for this content: ${input.courseMaterial}`,
-        metadata: {
-          request_type: "flashcards",
-          course_material: input.courseMaterial,
-          output_schema: {
-            type: "object",
-            properties: {
-              flashcards: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    front: { type: "string" },
-                    back: { type: "string" }
-                  },
-                  required: ["front", "back"]
-                }
-              }
-            },
-            required: ["flashcards"]
-          }
+        appName: "EduAssistant_Agents",
+        userId: userId,
+        sessionId: sessionId,
+        newMessage: {
+          role: "user",
+          parts: [{
+            text: `Create flashcards for this content. Please format your response as a JSON object with a 'flashcards' array. Each flashcard should have a 'front' (string) and 'back' (string) field. Here's the content: ${input.courseMaterial}\n\nFormat your response as: {\"flashcards\": [{\"front\": \"...\", \"back\": \"...\"}]}`
+          }]
         }
       })
     });

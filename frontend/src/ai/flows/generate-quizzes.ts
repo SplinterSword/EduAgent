@@ -12,6 +12,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { extractJsonFromResponse } from './flow_utils';
+import { useAuth } from '@/contexts/AuthContext';
 
 const GenerateQuizzesInputSchema = z.object({
   courseMaterial: z
@@ -41,35 +42,23 @@ export async function generateQuizzes(
   // Use ADK /run endpoint with configurable backend URL
   const ADK_URL = process.env.NEXT_PUBLIC_AGENT_API_URL || "http://localhost:8000";
   try {
+    const { user, signOut } = useAuth();
+
+    const userId = user || 'u_123'; // TODO: Get from AuthContext
+    const sessionId = localStorage.getItem('sessionId') || 's_' + Math.random().toString(36).substr(2, 9);
+    
     const res = await fetch(`${ADK_URL}/run`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        input: `Generate ${input.numQuestions} quiz questions based on this content: ${input.courseMaterial}`,
-        metadata: {
-          request_type: "quizzes",
-          course_material: input.courseMaterial,
-          output_schema: {
-            type: "object",
-            properties: {
-              quiz: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    question: { type: "string" },
-                    options: { 
-                      type: "array",
-                      items: { type: "string" }
-                    },
-                    correctAnswer: { type: "string" }
-                  },
-                  required: ["question", "options", "correctAnswer"]
-                }
-              }
-            },
-            required: ["quiz"]
-          }
+        appName: "EduAssistant_Agents",
+        userId: userId,
+        sessionId: sessionId,
+        newMessage: {
+          role: "user",
+          parts: [{
+            text: `Generate ${input.numQuestions} quiz questions based on this content. Please format your response as a JSON object with a 'quiz' array. Each quiz item should have: a 'question' (string), an 'options' array (array of 4 strings), and a 'correctAnswer' (string, must match one of the options). Here's the content: ${input.courseMaterial}\n\nPlease ensure each question has 4 distinct options and the correct answer is one of the provided options. Format your response as a JSON object with the structure: {\"quiz\": [{\"question\": \"...\", \"options\": [\"...\", \"...\", \"...\", \"...\"], \"correctAnswer\": \"...\"}]}`
+          }]
         }
       })
     });
