@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -12,23 +12,48 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import Link from 'next/link';
 
 export function ResourceSuggester() {
-  const [courseContent, setCourseContent] = useState('');
+  const [courseMaterial, setCourseMaterial] = useState('');
   const [suggestedResources, setSuggestedResources] = useState<SuggestedResource[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const [materialError, setMaterialError] = useState<string | null>(null);
+
+  // Load course material from localStorage on mount
+  useEffect(() => {
+    try {
+      const filename = localStorage.getItem('latest_course_material');
+      if (!filename) {
+        setMaterialError('No course material uploaded. Please upload a PDF or PPTX first.');
+        setCourseMaterial('');
+        return;
+      }
+      const content = localStorage.getItem(`course_material_${filename}`);
+      if (!content) {
+        setMaterialError('Stored course material not found or corrupted. Please re-upload.');
+        setCourseMaterial('');
+        return;
+      }
+      setCourseMaterial(content);
+      setMaterialError(null);
+    } catch (err) {
+      setMaterialError('Failed to load course material.');
+      setCourseMaterial('');
+    }
+  }, []);
+
 
   const handleSuggestResources = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!courseContent.trim()) {
+    if (!courseMaterial.trim()) {
       toast({ title: 'Empty Content', description: 'Please paste your course content.', variant: 'destructive' });
       return;
     }
     setIsLoading(true);
     setSuggestedResources([]);
     try {
-      const input: SuggestResourcesInput = { courseContent };
+      const input: SuggestResourcesInput = { courseContent: courseMaterial };
       const userId = localStorage.getItem('userID') || '';
-      const sessionId = localStorage.getItem('sessionId') || '';
+      const sessionId = localStorage.getItem('session_id') || '';
       const result: SuggestResourcesOutput = await suggestResources(input, userId, sessionId);
       setSuggestedResources(result);
       if (result.length === 0) {
@@ -66,8 +91,8 @@ export function ResourceSuggester() {
               </Label>
               <Textarea
                 id="resourceContent"
-                value={courseContent}
-                onChange={(e) => setCourseContent(e.target.value)}
+                value={courseMaterial}
+                onChange={(e) => setCourseMaterial(e.target.value)}
                 placeholder="Paste course topics or specific text here..."
                 rows={8}
                 className="text-base"

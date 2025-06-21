@@ -51,6 +51,7 @@ export async function suggestResources(input: SuggestResourcesInput, userId: str
     if (!res.ok) throw new Error(`Failed to generate flashcards from backend agent: ${res.status}`);
 
     const output = (await res.json())[0]?.content?.parts?.[0]?.text;
+    console.log("Output: ", output);
     const data = await extractJsonFromResponse(output);
 
     let result;
