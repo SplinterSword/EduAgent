@@ -19,9 +19,6 @@ const firebaseConfig = {
   appId: appId,
 };
 
-// Log the entire config object to see what Firebase is receiving
-console.log('Firebase config object being constructed:', firebaseConfig);
-
 // Initialize Firebase
 let app;
 

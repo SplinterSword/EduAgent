@@ -70,7 +70,9 @@ export function QuizGenerator() {
 
     try {
       const input: GenerateQuizzesInput = { courseMaterial, numQuestions };
-      const result: GenerateQuizzesOutput = await generateQuizzes(input);
+      const userId = localStorage.getItem('userID') || '';
+      const sessionId = localStorage.getItem('session_id') || '';
+      const result: GenerateQuizzesOutput = await generateQuizzes(input, userId, sessionId);
       const newQuiz = result.quiz.map((q, index) => ({ ...q, id: `q-${index}-${Date.now()}` }));
       setQuiz(newQuiz);
        if (newQuiz.length === 0) {

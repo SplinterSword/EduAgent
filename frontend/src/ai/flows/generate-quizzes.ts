@@ -12,7 +12,6 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { extractJsonFromResponse } from './flow_utils';
-import { useAuth } from '@/contexts/AuthContext';
 
 const GenerateQuizzesInputSchema = z.object({
   courseMaterial: z
@@ -37,16 +36,11 @@ const GenerateQuizzesOutputSchema = z.object({
 export type GenerateQuizzesOutput = z.infer<typeof GenerateQuizzesOutputSchema>;
 
 export async function generateQuizzes(
-  input: GenerateQuizzesInput
+  input: GenerateQuizzesInput, userId: string, sessionId: string
 ): Promise<GenerateQuizzesOutput> {
   // Use ADK /run endpoint with configurable backend URL
   const ADK_URL = process.env.NEXT_PUBLIC_AGENT_API_URL || "http://localhost:8000";
   try {
-    const { user, signOut } = useAuth();
-
-    const userId = user?.email || 'u_123'; // TODO: Get from AuthContext
-    const sessionId = localStorage.getItem('sessionId') || 's_' + Math.random().toString(36).substr(2, 9);
-    
     const res = await fetch(`${ADK_URL}/run`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -63,11 +57,11 @@ export async function generateQuizzes(
       })
     });
 
-    if (!res.ok) {
-      throw new Error(`Failed to generate quizzes: ${res.statusText}`);
-    }
+    if (!res.ok) throw new Error(`Failed to generate flashcards from backend agent: ${res.status}`);
 
-    const data = await extractJsonFromResponse(await res.text());
+    const output = (await res.json())[0]?.content?.parts?.[0]?.text;
+    const data = await extractJsonFromResponse(output);
+
     let result;
     try {
       result = typeof data === 'string' ? JSON.parse(data) : data;

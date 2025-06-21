@@ -11,7 +11,6 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { extractJsonFromResponse } from './flow_utils';
-import { useAuth } from '@/contexts/AuthContext';
 
 const SuggestResourcesInputSchema = z.object({
   courseContent: z
@@ -29,14 +28,10 @@ const SuggestedResourceSchema = z.object({
 const SuggestResourcesOutputSchema = z.array(SuggestedResourceSchema).describe('An array of suggested resources.');
 export type SuggestResourcesOutput = z.infer<typeof SuggestResourcesOutputSchema>;
 
-export async function suggestResources(input: SuggestResourcesInput): Promise<SuggestResourcesOutput> {
+export async function suggestResources(input: SuggestResourcesInput, userId: string, sessionId: string): Promise<SuggestResourcesOutput> {
   // Use ADK /run endpoint with configurable backend URL
   const ADK_URL = process.env.NEXT_PUBLIC_AGENT_API_URL || "http://localhost:8000";
   try {
-    const { user, signOut } = useAuth();
-    const userId = user?.email || 'u_123';
-    const sessionId = localStorage.getItem('sessionId') || 's_' + Math.random().toString(36).substr(2, 9);
-    
     const res = await fetch(`${ADK_URL}/run`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -53,11 +48,11 @@ export async function suggestResources(input: SuggestResourcesInput): Promise<Su
       })
     });
 
-    if (!res.ok) {
-      throw new Error(`Failed to suggest resources: ${res.statusText}`);
-    }
+    if (!res.ok) throw new Error(`Failed to generate flashcards from backend agent: ${res.status}`);
 
-    const data = extractJsonFromResponse(await res.text());
+    const output = (await res.json())[0]?.content?.parts?.[0]?.text;
+    const data = await extractJsonFromResponse(output);
+
     let result;
     try {
       result = typeof data === 'string' ? JSON.parse(data) : data;

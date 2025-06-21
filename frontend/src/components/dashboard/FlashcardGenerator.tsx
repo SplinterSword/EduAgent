@@ -82,7 +82,9 @@ export function FlashcardGenerator() {
     setCurrentCardIndex(0);
     try {
       const input: GenerateFlashcardsInput = { courseMaterial };
-      const result: GenerateFlashcardsOutput = await generateFlashcards(input);
+      const userId = localStorage.getItem('userID') || '';
+      const sessionId = localStorage.getItem('session_id') || '';
+      const result: GenerateFlashcardsOutput = await generateFlashcards(input, userId, sessionId);
       const newFlashcards = result.flashcards.map((fc, index) => ({ ...fc, id: `fc-${index}-${Date.now()}` }));
       setFlashcards(newFlashcards);
       setFlippedStates(new Array(newFlashcards.length).fill(false));

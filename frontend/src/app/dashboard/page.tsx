@@ -47,10 +47,11 @@ export default function DashboardPage() {
   ];
 
   const userID = user?.email || 'u_123';
+  localStorage.setItem('userID', userID);
   const sessionId = localStorage.getItem('sessionId') || 's_' + Math.random().toString(36).substr(2, 9);
-
+  const ADK_URL = process.env.NEXT_PUBLIC_AGENT_API_URL || "http://localhost:8000"
   const makeSession = async () => {
-    const session = await fetch('http://localhost:8000/apps/EduAssistant_Agents/users/' + userID + '/sessions/' + sessionId, {
+    const session = await fetch(`${ADK_URL}/apps/EduAssistant_Agents/users/${userID}/sessions/${sessionId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

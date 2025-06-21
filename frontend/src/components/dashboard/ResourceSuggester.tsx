@@ -27,7 +27,9 @@ export function ResourceSuggester() {
     setSuggestedResources([]);
     try {
       const input: SuggestResourcesInput = { courseContent };
-      const result: SuggestResourcesOutput = await suggestResources(input);
+      const userId = localStorage.getItem('userID') || '';
+      const sessionId = localStorage.getItem('sessionId') || '';
+      const result: SuggestResourcesOutput = await suggestResources(input, userId, sessionId);
       setSuggestedResources(result);
       if (result.length === 0) {
         toast({ title: 'No Resources Found', description: 'Could not find relevant resources for the provided content.', variant: 'default' });
