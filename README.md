@@ -71,7 +71,7 @@ Docker containerization ensures consistent environments across development, test
    ```
 
 4. **Configure environment variables**
-   - Copy `.env.example` to `.env` in both `backend` and `frontend` directories
+   - Copy `.env.example` to `.env` in both `backend/EduAssistant_Agents` and `frontend` directories
    - Update the variables with your configuration
 
 5. **Start the development servers**
