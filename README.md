@@ -2,7 +2,7 @@
 
 Education is the foundation of progress, yet students and educators often struggle with processing and understanding complex educational materials efficiently. The challenge lies in effectively summarizing content, creating assessments, and finding relevant references - tasks that are time-consuming and require significant effort.
 
-EduAgent is an intelligent educational platform that leverages AI to transform how we learn and teach. By automating content summarization, quiz generation, and reference finding, EduAgent helps students grasp complex topics faster and assists educators in creating better learning materials.
+EduAssistant is an intelligent educational platform that leverages AI to transform how we learn and teach. By automating content summarization, quiz generation, and reference finding, EduAssistant helps students grasp complex topics faster and assists educators in creating better learning materials.
 
 ## Problem that I am trying to solve
 
@@ -12,11 +12,11 @@ Students and educators face several challenges in the learning process:
 - Finding relevant references and citations requires extensive research
 - Maintaining engagement with study materials can be difficult
 
-EduAgent addresses these challenges by providing AI-powered tools that automate these tasks, allowing users to focus on understanding and applying knowledge rather than spending time on mechanical tasks.
+EduAssistant addresses these challenges by providing AI-powered tools that automate these tasks, allowing users to focus on understanding and applying knowledge rather than spending time on mechanical tasks.
 
-## How to use EduAgent
+## How to use EduAssistant
 
-1. Visit the EduAgent web application (live link on the side of the github page)
+1. Visit the EduAssistant web application (live link on the side of the github page)
 2. Upload or paste your educational content
 3. Choose from our AI-powered tools:
    - **Summarizer**: Get concise summaries of your content
@@ -52,8 +52,8 @@ Docker containerization ensures consistent environments across development, test
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/EduAgent.git
-   cd EduAgent
+   git clone https://github.com/your-username/EduAssistant.git
+   cd EduAssistant
    ```
 
 2. **Set up the backend**
@@ -82,7 +82,7 @@ Docker containerization ensures consistent environments across development, test
 
 ## Contributing
 
-We welcome contributions! To contribute to EduAgent:
+We welcome contributions! To contribute to EduAssistant:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/your-feature`)
